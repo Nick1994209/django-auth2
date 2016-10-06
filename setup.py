@@ -6,15 +6,15 @@ README = open(os.path.join(here, 'README.rst')).read()
 
 setup(
     name='django-auth2',
-    version='0.1',
+    version='0.02',
     packages=['auth2'],
     description='Login, Registration and Resset password, ActivateUser',
     long_description=README,
-    author='Nikita Korolkov',
+    author='nick1994209',
     author_email='nick1994209@gmail.com',
-    url='https://github.com/yourname/django-myapp/',
+    url='https://github.com/Nick1994209/django-auth2/',
     license='MIT',
     install_requires=[
-        'Django>=1.10',
+        'Django>=1.8',
     ]
 )

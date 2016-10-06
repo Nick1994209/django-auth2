@@ -3,3 +3,5 @@ __pycache__/*
 node_modules/*
 db.sqlite3
 *pyc
+dist/
+django_auth2.egg-info/

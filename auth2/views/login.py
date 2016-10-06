@@ -1,10 +1,10 @@
 # coding: utf-8
-from auth2.forms import LoginForm
 from django.contrib import auth
 from django.core.urlresolvers import reverse_lazy
 from django.views.generic import FormView
 
-from auth2.utils import RedirectActiveUser
+from ..utils import RedirectActiveUser
+from ..forms import LoginForm
 
 
 class Login(RedirectActiveUser, FormView):

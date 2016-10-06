@@ -1,6 +1,6 @@
 # coding: utf-8
 from django.conf.urls import url
-from auth2.views import login, register, activate, reset_password, logout
+from .views import login, register, activate, reset_password, logout
 
 
 urlpatterns = [

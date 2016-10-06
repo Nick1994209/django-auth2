@@ -7,11 +7,11 @@ from django.utils.http import urlsafe_base64_decode
 from django.views import View
 from django.views.generic import FormView
 
-from auth2 import utils
-from auth2 import mails
-from auth2.tokens import account_activation_token
-from auth2.utils import get_user_model
-from auth2 import forms
+from .. import utils
+from .. import mails
+from ..tokens import account_activation_token
+from ..utils import get_user_model
+from .. import forms
 
 
 class ReSend(FormView):

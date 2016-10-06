@@ -1,10 +1,10 @@
 from django.contrib import auth
 from django.shortcuts import redirect, render
 from django.views.generic import FormView
-from auth2.forms import RegisterForm
-from auth2 import utils
-from auth2 import mails
-from auth2.utils import RedirectActiveUser
+from ..forms import RegisterForm
+from .. import utils
+from .. import mails
+from ..utils import RedirectActiveUser
 
 
 class Register(RedirectActiveUser, FormView):

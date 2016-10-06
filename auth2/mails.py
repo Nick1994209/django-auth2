@@ -1,9 +1,10 @@
 from django.core.urlresolvers import reverse
 from django.utils.http import *
-from auth2.tokens import account_activation_token, password_reset_token_henerator
-from auth2 import tasks
 from django.template.loader import render_to_string
 from django.template import Context, Template
+
+from .tokens import account_activation_token, password_reset_token_henerator
+from . import tasks
 
 
 def send_reset_password_mail(request, user):    # TODO: добавить анатацию типов

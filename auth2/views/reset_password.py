@@ -1,10 +1,10 @@
 from django.urls import reverse_lazy
 from django.views.generic import FormView
 from django.contrib.auth import views as auth_views
-from auth2 import utils
-from auth2 import mails
-from auth2 import forms
-from auth2.tokens import password_reset_token_henerator
+from .. import utils
+from .. import mails
+from .. import forms
+from ..tokens import password_reset_token_henerator
 
 
 class PasswordReset(FormView):
