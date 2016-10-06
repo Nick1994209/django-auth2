@@ -1,10 +1,10 @@
-pip install django-auth2
+pip install django_auth2
 
 
 INSTALLED_APPS = [
     ...
     'django.contrib.auth',
-    'auth2',
+    'django_auth2',
 ]
 
 in User model add
