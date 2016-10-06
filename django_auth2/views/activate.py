@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.utils.encoding import force_text
 from django.utils.http import urlsafe_base64_decode
 from django.views import View
-from django.views.generic import FormView
+from django.views.generic import FormView, TemplateView
 
 from .. import utils
 from .. import mails
@@ -45,7 +45,7 @@ class Activate(View):
         user.save()
 
         auth.login(request, user) # TODO уточнять; возможно чувака переводить на залогиться
-        return redirect(reverse('index'))
+        return redirect(reverse('activation_success'))
 
     def get_user(self, uidb64):
         try:
@@ -58,3 +58,9 @@ class Activate(View):
         return account_activation_token.check_token(user, token)
 
 activate = Activate.as_view()
+
+
+class Success(TemplateView):
+    template_name = 'django_auth2/activate/success.html'
+
+success = Success.as_view()

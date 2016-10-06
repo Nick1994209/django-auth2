@@ -11,6 +11,15 @@ try:
         django_send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, to_emails)
 
 except ImportError:
+
+    def func_add_delay(func):
+        def wrapper(*args, **kwargs):
+            return func(*args, **kwargs)
+
+        wrapper.delay = func
+        return wrapper
+
+    @func_add_delay
     def send_mail(subject, message, to_emails):
         django_send_mail(subject, message, settings.DEFAULT_FROM_EMAIL,
                          to_emails)

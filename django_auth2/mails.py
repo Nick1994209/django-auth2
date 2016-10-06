@@ -21,7 +21,7 @@ def send_reset_password_mail(request, user):    # TODO: добавить ана�
     url = scheme + '://' + host + reset_url
 
     context = Context({'url': url})
-    message = render_to_string('auth2/mail/send_reset_password_mail.html', context)
+    message = render_to_string('django_auth2/mail/send_reset_password_mail.html', context)
     subject = 'Смена пароля'
 
     tasks.send_mail.delay(subject, message, [user.email])
@@ -40,7 +40,7 @@ def send_activation_mail(request, user):
 
     url = scheme + '://' + host + activation_url
     context = Context({'url': url})
-    message = render_to_string('auth2/mail/send_activation_mail.html',
+    message = render_to_string('django_auth2/mail/send_activation_mail.html',
                                context)
     subject = 'Подтверждение аккаунта'
 
