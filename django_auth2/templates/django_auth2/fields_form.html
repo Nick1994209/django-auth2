@@ -14,8 +14,9 @@
             {{ field.label }}
         </label>
 
-        <div class="col-sm-9 {% if field.errors %} field_error {% endif %}">
-            <input class="form-control input-text-block" id="{{ field.id_for_label }}"
+        <div class="col-sm-9 ">
+            <input class="form-control input-text-block {% if field.errors %} field_error {% endif %}"
+                   id="{{ field.id_for_label }}"
                    value="{{ field.value|default_if_none:"" }}"
                    name="{{ field.name }}"
                    type="{{ field.field.widget.input_type }}"

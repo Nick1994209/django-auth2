@@ -17,9 +17,15 @@ in your project.urls
     url(r'', include('django_auth2.urls')),
     ...
 
-in User model change mail
+in User model
 
     email = models.EmailField(unique=True, blank=False)
+    is_active = models.BooleanField()
+
+
+if want send activation email for activate user
+then set SEND_ACTIVATION_EMAIL in yor project.settings
+else user.is_active = True (by default)
 
 For send mail (example):
 
@@ -38,5 +44,11 @@ password reset days in project.settings
 Your need create view with name "index" for redirect (after authentication)
 
 
-celery
+you can use celery for send mails
+if you virtualenv installed celery and project work with her;
+  mails be sent from celery
+else if installed celery but not project now work with her;
+  mails message is not sent
+
+if not celery then mail sent (default django)
 [first state with celery. django]: http://docs.celeryproject.org/en/latest/django/first-steps-with-django.html

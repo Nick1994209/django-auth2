@@ -1,5 +1,6 @@
+from django.conf import settings
 from django.contrib import auth
-from django.shortcuts import redirect, render
+from django.shortcuts import render, redirect
 from django.views.generic import FormView
 from ..forms import RegisterForm
 from .. import utils
@@ -15,13 +16,18 @@ class Register(RedirectActiveUser, FormView):
         form.save()
 
         user = utils.get_user(username=form.cleaned_data['username'])
-        user.is_active = False
-        user.save()
-        mails.send_activation_mail(self.request, user)
 
-        # user_cache = auth.authenticate(username=form.cleaned_data['username'], password=form.cleaned_data['password2'])
-        #
-        # auth.login(self.request, user_cache)
-        return render(self.request, template_name='django_auth2/register/email_sended.html')
+        if hasattr(settings, 'SEND_ACTIVATION_EMAIL') and settings.SEND_ACTIVATION_EMAIL:
+            user.is_active = False
+            mails.send_activation_mail(self.request, user)
+            return render(
+                self.request, template_name='django_auth2/register/email_sended.html'
+            )
+        else:
+            user.is_active = True
+            user.save()
+
+            auth.login(self.request, user)
+            return redirect('index')
 
 register = Register.as_view()
