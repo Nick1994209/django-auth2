@@ -17,7 +17,7 @@ class Register(RedirectActiveUser, FormView):
 
         user = utils.get_user(username=form.cleaned_data['username'])
 
-        if hasattr(settings, 'SEND_ACTIVATION_EMAIL') and settings.SEND_ACTIVATION_EMAIL:
+        if getattr(settings, 'DJANGO_AUTH2_SEND_ACTIVATION_EMAIL', default=False):
             user.is_active = False
             mails.send_activation_mail(self.request, user)
             return render(
@@ -27,7 +27,13 @@ class Register(RedirectActiveUser, FormView):
             user.is_active = True
             user.save()
 
-            auth.login(self.request, user)
-            return redirect('index')
+            username_name_field = utils.get_user_model().USERNAME_FIELD
+            user_kwargs = {username_name_field: getattr(user, username_name_field)}
+            user_cache = auth.authenticate(
+                password=form.cleaned_data['password1'], **user_kwargs)
+
+            if user_cache is not None:
+                auth.login(self.request, user_cache)
+                return redirect('index')
 
 register = Register.as_view()

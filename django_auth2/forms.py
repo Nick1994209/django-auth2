@@ -12,11 +12,6 @@ class LoginForm(AuthenticationForm):
         'inactive': "Аккаунт не активен",
     }
 
-    # def __init__(self, *args, **kwargs):
-    #     super().__init__(*args, **kwargs)
-        # self.fields['username'].label = "Логин"
-        # self.fields['password'].label = "Пароль"
-
     def clean(self):
         username = self.cleaned_data.get('username')
         password = self.cleaned_data.get('password')
@@ -44,7 +39,6 @@ class LoginForm(AuthenticationForm):
                 raise forms.ValidationError(
                     self.error_messages['invalid_login'],
                     code='invalid_login',
-                    # params={'username': self.username_field.verbose_name},
                 )
 
         return self.cleaned_data
@@ -58,11 +52,6 @@ class RegisterForm(forms.ModelForm):
                                 widget=forms.PasswordInput,
                                 strip=False,
                                 help_text=("Пароли должны совподать"))
-
-    # def __init__(self, **qwargs):
-    #     super(RegisterForm, self).__init__(**qwargs)
-        # self.fields['username'].label = "Логин"
-        # self.fields['username'].error_messages['required'] = 'Требуется'
 
     class Meta:
         model = utils.get_user_model()
@@ -82,10 +71,7 @@ class RegisterForm(forms.ModelForm):
         user = super(RegisterForm, self).save(commit=False)
         for field, value in self.cleaned_data.items():
             setattr(user, field, value)
-        # user.set_password(self.cleaned_data["password1"])
-        # user.email = self.cleaned_data['email']
-        user_model = utils.get_user_model()
-        # user = user_model(**self.cleaned_data)
+
         user.set_password(self.cleaned_data["password1"])
 
         if commit:

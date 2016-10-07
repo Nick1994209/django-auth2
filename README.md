@@ -24,8 +24,8 @@ in User model
 
 
 if want send activation email for activate user
-then set SEND_ACTIVATION_EMAIL in yor project.settings
-else user.is_active = True (by default)
+then set DJANGO_AUTH2_SEND_ACTIVATION_EMAIL in yor project.settings user.is_active = False
+else user.is_active = True (by default) and mail not sent
 
 For send mail (example):
 
@@ -49,6 +49,6 @@ if you virtualenv installed celery and project work with her;
   mails be sent from celery
 else if installed celery but not project now work with her;
   mails message is not sent
+[first state with celery. django]: http://docs.celeryproject.org/en/latest/django/first-steps-with-django.html
 
 if not celery then mail sent (default django)
-[first state with celery. django]: http://docs.celeryproject.org/en/latest/django/first-steps-with-django.html

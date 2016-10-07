@@ -6,7 +6,7 @@ README = open(os.path.join(here, 'README.md')).read()
 
 setup(
     name='django_auth2',
-    version='0.0.10',
+    version='0.0.12',
     description='Login, Registration, Reset password, ActivateUser',
     long_description=README,
     author='nick1994209',
@@ -14,10 +14,9 @@ setup(
     url='https://github.com/Nick1994209/django-auth2/',
     license='MIT',
     packages=find_packages(),
-    # packages=['django_auth2'],
     include_package_data=True,
     install_requires=[
-        'django',
+        'Django>=1.7',
         # 'celery' if your need
     ]
 )

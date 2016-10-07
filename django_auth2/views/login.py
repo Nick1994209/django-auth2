@@ -13,7 +13,8 @@ class Login(RedirectActiveUser, FormView):
     success_url = reverse_lazy('index')
 
     def form_valid(self, form):
-        auth.login(self.request, form.get_user())
+        user_cache = form.get_user()
+        auth.login(self.request, user_cache)
         return super(Login, self).form_valid(form)
 
 login = Login.as_view()
