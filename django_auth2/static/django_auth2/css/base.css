@@ -65,7 +65,7 @@ body {
 }
 
 .input-text-block {
-    border: 1px solid #cccccc; //цвет рамки
+    border: 1px solid #cccccc;
     
     border-radius: 5px;
     -webkit-border-radius: 5px;
@@ -100,7 +100,11 @@ body {
 
 .field_error {
     border: solid 2px #ba5055;
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 3px;
+    -khtml-border-radius: 3px;
 }
 .text-danger {
-    color: #ba5055
+    color: #ba5055;
 }

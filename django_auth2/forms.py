@@ -7,40 +7,44 @@ from . import utils
 
 
 class LoginForm(AuthenticationForm):
-    username = forms.CharField(label="Логин")
     error_messages = {
         'invalid_login': "Пожалуйста введите корректный логин или пароль",
         'inactive': "Аккаунт не активен",
     }
+
+    # def __init__(self, *args, **kwargs):
+    #     super().__init__(*args, **kwargs)
+        # self.fields['username'].label = "Логин"
+        # self.fields['password'].label = "Пароль"
 
     def clean(self):
         username = self.cleaned_data.get('username')
         password = self.cleaned_data.get('password')
 
         if username and password:
-
+            user_kwargs = {utils.get_user_model().USERNAME_FIELD: username}
             try:
-                user = utils.get_user(username=username)
+                user = utils.get_user(**user_kwargs)
 
                 if user.is_active == False:
                     raise forms.ValidationError(
                         "Аккаунт не активен, хотите выслать подтверждение еще раз?",
                         code='invalid_account',
-                        params={'username': self.username_field.verbose_name},
+                        # params={'username': self.username_field.verbose_name},
                     )
             except utils.get_user_model().DoesNotExist:
                 raise forms.ValidationError(
                     self.error_messages['invalid_login'],
                     code='invalid_login',
-                    params={'username': self.username_field.verbose_name},
+                    # params={'username': self.username_field.verbose_name},
                 )
 
-            self.user_cache = authenticate(username=username, password=password)
+            self.user_cache = authenticate(password=password, **user_kwargs)
             if self.user_cache is None:
                 raise forms.ValidationError(
                     self.error_messages['invalid_login'],
                     code='invalid_login',
-                    params={'username': self.username_field.verbose_name},
+                    # params={'username': self.username_field.verbose_name},
                 )
 
         return self.cleaned_data
@@ -55,14 +59,14 @@ class RegisterForm(forms.ModelForm):
                                 strip=False,
                                 help_text=("Пароли должны совподать"))
 
-    def __init__(self, **qwargs):
-        super(RegisterForm, self).__init__(**qwargs)
-        self.fields['username'].label = "Имя пользователя"
-        self.fields['username'].error_messages['required'] = 'Требуется имя пользователя'
+    # def __init__(self, **qwargs):
+    #     super(RegisterForm, self).__init__(**qwargs)
+        # self.fields['username'].label = "Логин"
+        # self.fields['username'].error_messages['required'] = 'Требуется'
 
     class Meta:
         model = utils.get_user_model()
-        fields = ("username", 'email')
+        fields = utils.get_user_model().REQUIRED_FIELDS + [utils.get_user_model().USERNAME_FIELD]
 
     def clean_password2(self):
         password1 = self.cleaned_data.get("password1")
@@ -76,8 +80,14 @@ class RegisterForm(forms.ModelForm):
 
     def save(self, commit=True):
         user = super(RegisterForm, self).save(commit=False)
+        for field, value in self.cleaned_data.items():
+            setattr(user, field, value)
+        # user.set_password(self.cleaned_data["password1"])
+        # user.email = self.cleaned_data['email']
+        user_model = utils.get_user_model()
+        # user = user_model(**self.cleaned_data)
         user.set_password(self.cleaned_data["password1"])
-        user.email = self.cleaned_data['email']
+
         if commit:
             user.save()
         return user
