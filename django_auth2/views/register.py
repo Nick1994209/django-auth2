@@ -17,7 +17,7 @@ class Register(RedirectActiveUser, FormView):
 
         user = utils.get_user(username=form.cleaned_data['username'])
 
-        if getattr(settings, 'DJANGO_AUTH2_SEND_ACTIVATION_EMAIL', default=False):
+        if getattr(settings, 'DJANGO_AUTH2_SEND_ACTIVATION_EMAIL', False):
             user.is_active = False
             mails.send_activation_mail(self.request, user)
             return render(

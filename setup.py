@@ -6,7 +6,7 @@ README = open(os.path.join(here, 'README.md')).read()
 
 setup(
     name='django_auth2',
-    version='0.0.12',
+    version='0.0.15',
     description='Login, Registration, Reset password, ActivateUser',
     long_description=README,
     author='nick1994209',
