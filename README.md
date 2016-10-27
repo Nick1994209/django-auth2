@@ -17,10 +17,13 @@ in your project.urls
     url(r'', include('django_auth2.urls')),
     ...
 
-in User model
+in User model (optional)
 
     email = models.EmailField(unique=True, blank=False)
     is_active = models.BooleanField()
+    
+in project.settings:
+    settings.LOGIN_URL
 
 
 if want send activation email for activate user
