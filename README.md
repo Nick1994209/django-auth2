@@ -1,7 +1,8 @@
 #Django AUTH
 
 ###installing
-    pip install django_auth2
+
+    python setup.pu install 
 
 in your project.settings
 
