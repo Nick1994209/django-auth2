@@ -1,35 +1,29 @@
+from django.contrib.auth import views as auth_views
 from django.urls import reverse_lazy
 from django.views.generic import FormView
-from django.contrib.auth import views as auth_views
-from .. import utils
-from .. import mails
-from .. import forms
-from ..tokens import password_reset_token_henerator
+
+from .. import forms, mails
+from ..tokens import password_reset_token_generator
 
 
 class PasswordReset(FormView):
     form_class = forms.PasswordResetForm
-    template_name = 'django_auth2/reset_password/password_reset_form.html'
+    template_name = 'django_auth2/reset_password/form.html'
     success_url = reverse_lazy('password_reset_done')
 
     def form_valid(self, form):
-        user = utils.get_user(email=form.cleaned_data['email'])
-        mails.send_reset_password_mail(self.request, user)
-        return super().form_valid(form)
+        response = super().form_valid(form)
 
+        user = form.get_user_from_email()
+        mails.send_reset_password_mail(self.request, user)
+        return response
 
 password_reset = PasswordReset.as_view()
-
-# def password_reset(request, **kwargs):
-#     return auth_views.password_reset(request,
-#                                      template_name='auth2/reset_password/password_reset_form.html',
-#                                      email_template_name='auth2/reset_password/password_reset_email.html',
-#                                      **kwargs)
 
 
 def password_reset_done(request, **kwargs):
     return auth_views.password_reset_done(
-        request, template_name='django_auth2/reset_password/password_reset_done.html',
+        request, template_name='django_auth2/reset_password/done.html',
         **kwargs
     )
 
@@ -38,8 +32,8 @@ def password_reset_confirm(request, **kwargs):
     return auth_views.password_reset_confirm(
         request,
         set_password_form=forms.SetPasswordForm,
-        token_generator=password_reset_token_henerator,
-        template_name='django_auth2/reset_password/password_reset_confirm.html',
+        token_generator=password_reset_token_generator,
+        template_name='django_auth2/reset_password/confirm.html',
         **kwargs
     )
 
@@ -47,5 +41,5 @@ def password_reset_confirm(request, **kwargs):
 def password_reset_complete(request, **kwargs):
     return auth_views.password_reset_done(
         request,
-        template_name='django_auth2/reset_password/password_reset_complete.html',
+        template_name='django_auth2/reset_password/complete.html',
         **kwargs)

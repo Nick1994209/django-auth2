@@ -1,15 +1,16 @@
 # -*- coding:utf-8 -*-
-from django.contrib.auth import authenticate
-from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth.forms import SetPasswordForm as DjangoSetPasswordForm
 from django import forms
+from django.contrib.auth import authenticate
+from django.contrib.auth.forms import SetPasswordForm as DjangoSetPasswordForm
+from django.contrib.auth.forms import AuthenticationForm
+
 from . import utils
 
 
 class LoginForm(AuthenticationForm):
     error_messages = {
-        'invalid_login': "Пожалуйста введите корректный логин или пароль",
-        'inactive': "Аккаунт не активен",
+        'invalid_login': 'Пожалуйста введите корректный логин или пароль',
+        'inactive': 'Аккаунт не активен',
     }
 
     def clean(self):
@@ -21,9 +22,9 @@ class LoginForm(AuthenticationForm):
             try:
                 user = utils.get_user(**user_kwargs)
 
-                if user.is_active == False:
+                if not user.is_active:
                     raise forms.ValidationError(
-                        "Аккаунт не активен, хотите выслать подтверждение еще раз?",
+                        'Аккаунт не активен, хотите выслать подтверждение еще раз?',
                         code='invalid_account',
                         # params={'username': self.username_field.verbose_name},
                     )
@@ -45,21 +46,19 @@ class LoginForm(AuthenticationForm):
 
 
 class RegisterForm(forms.ModelForm):
-    password1 = forms.CharField(label=("Пароль"),
-                                strip=False,
-                                widget=forms.PasswordInput)
-    password2 = forms.CharField(label=("Повторите пароль"),
+    password1 = forms.CharField(label='Пароль', strip=False, widget=forms.PasswordInput)
+    password2 = forms.CharField(label='Повторите пароль',
                                 widget=forms.PasswordInput,
                                 strip=False,
-                                help_text=("Пароли должны совподать"))
+                                help_text='Пароли должны совподать')
 
     class Meta:
         model = utils.get_user_model()
         fields = utils.get_user_model().REQUIRED_FIELDS + [utils.get_user_model().USERNAME_FIELD]
 
     def clean_password2(self):
-        password1 = self.cleaned_data.get("password1")
-        password2 = self.cleaned_data.get("password2")
+        password1 = self.cleaned_data.get('password1')
+        password2 = self.cleaned_data.get('password2')
         if password1 and password2 and password1 != password2:
             raise forms.ValidationError(
                 u'Пароли не совпадают',
@@ -72,7 +71,7 @@ class RegisterForm(forms.ModelForm):
         for field, value in self.cleaned_data.items():
             setattr(user, field, value)
 
-        user.set_password(self.cleaned_data["password1"])
+        user.set_password(self.cleaned_data['password1'])
 
         if commit:
             user.save()
@@ -88,15 +87,19 @@ class RetrySendEmailForActivateForm(forms.Form):
         try:
             user = utils.get_user(email=email)
 
-            if user.is_active == True:
+            if user.is_active:
                 raise forms.ValidationError(
-                    "Аккаунт активен",
+                    'Аккаунт активен',
                     code='account_is_active',
                 )
 
         except utils.get_user_model().DoesNotExist:
             raise forms.ValidationError(
                 'Пользователя не найдено',
+            )
+        except utils.get_user_model().MultipleObjectsReturned:
+            raise forms.ValidationError(
+                'Большое количество пользователей на один email: {}'.format(email),
             )
         return email
 
@@ -108,11 +111,11 @@ class PasswordResetForm(forms.Form):
         email = self.cleaned_data['email']
 
         try:
-            user = utils.get_user(email=email)
+            self._user = utils.get_user(email=email)
 
-            if user.is_active == False:
+            if not self._user.is_active:
                 raise forms.ValidationError(
-                    "Аккаунт не активен, хотите выслать подтверждение еще раз?",
+                    'Аккаунт не активен, хотите выслать подтверждение еще раз?',
                     code='account_not_active',
                 )
 
@@ -120,6 +123,13 @@ class PasswordResetForm(forms.Form):
             raise forms.ValidationError(
                 'Пользователя не найдено',
             )
+        except utils.get_user_model().MultipleObjectsReturned:
+            raise forms.ValidationError(
+                'Большое количество пользователей на один email: {}'.format(email),
+            )
+
+    def get_user_from_email(self):
+        return getattr(self, '_user', None)
 
 
 class SetPasswordForm(DjangoSetPasswordForm):

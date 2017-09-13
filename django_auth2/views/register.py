@@ -1,10 +1,11 @@
 from django.conf import settings
 from django.contrib import auth
-from django.shortcuts import render, redirect
+from django.db.transaction import atomic
+from django.shortcuts import redirect, render
 from django.views.generic import FormView
+
+from .. import mails, utils
 from ..forms import RegisterForm
-from .. import utils
-from .. import mails
 from ..utils import RedirectActiveUser
 
 
@@ -12,6 +13,7 @@ class Register(RedirectActiveUser, FormView):
     form_class = RegisterForm
     template_name = "django_auth2/register/register.html"
 
+    @atomic
     def form_valid(self, form):
         form.save()
 
@@ -19,6 +21,7 @@ class Register(RedirectActiveUser, FormView):
 
         if getattr(settings, 'DJANGO_AUTH2_SEND_ACTIVATION_EMAIL', False):
             user.is_active = False
+            user.save()
             mails.send_activation_mail(self.request, user)
             return render(
                 self.request, template_name='django_auth2/register/email_sended.html'

@@ -1,5 +1,6 @@
 from django.test import TestCase
-from rest_framework.reverse import reverse_lazy
+from django.urls import reverse_lazy
+
 from .base import BaseWithoutLoginMixin
 
 

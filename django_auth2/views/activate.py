@@ -1,4 +1,5 @@
 from django.contrib import auth
+from django.db.transaction import atomic
 from django.http import Http404
 from django.shortcuts import redirect, render
 from django.urls import reverse
@@ -7,17 +8,16 @@ from django.utils.http import urlsafe_base64_decode
 from django.views import View
 from django.views.generic import FormView, TemplateView
 
-from .. import utils
-from .. import mails
+from .. import forms, mails, utils
 from ..tokens import account_activation_token
 from ..utils import get_user_model
-from .. import forms
 
 
 class ReSend(FormView):
     form_class = forms.RetrySendEmailForActivateForm
     template_name = 'django_auth2/activate/re_send.html'
 
+    @atomic
     def form_valid(self, form):
         email = form.cleaned_data['email']
         user = utils.get_user(email=email)
@@ -31,20 +31,17 @@ re_send = ReSend.as_view()
 
 class Activate(View):
 
+    @atomic
     def get(self, request, uidb64, token):
 
         user = self.get_user(uidb64)
-
-        if not user or user.is_active:
-            raise Http404
-
-        if not self.token_valid(user, token):
+        if not user or user.is_active or not self.token_valid(user, token):
             raise Http404
 
         user.is_active = True
         user.save()
 
-        auth.login(request, user) # TODO уточнять; возможно чувака переводить на залогиться
+        auth.login(request, user)
         return redirect(reverse('activation_success'))
 
     def get_user(self, uidb64):

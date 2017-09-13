@@ -6,7 +6,7 @@ README = open(os.path.join(here, 'README.md')).read()
 
 setup(
     name='django_auth2',
-    version='0.0.15',
+    version='0.1.1',
     description='Login, Registration, Reset password, ActivateUser',
     long_description=README,
     author='nick1994209',
@@ -16,7 +16,24 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     install_requires=[
-        'Django>=1.7',
+        'Django>=1.10',
         # 'celery' if your need
     ]
 )
+
+
+"""
+for uploading new version
+
+1. in ~/.pypurc
+
+    [distutils]
+    index-servers =
+        pypi
+    
+    [pypi]
+    repository: https://upload.pypi.org/legacy/
+    username: nick1994209
+
+2. python setup.py sdist upload
+"""

@@ -3,8 +3,8 @@ from django.contrib import auth
 from django.core.urlresolvers import reverse_lazy
 from django.views.generic import FormView
 
-from ..utils import RedirectActiveUser
 from ..forms import LoginForm
+from ..utils import RedirectActiveUser
 
 
 class Login(RedirectActiveUser, FormView):
